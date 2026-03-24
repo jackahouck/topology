@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from sampling import sample_holes
+from sampling import place_holes, sample_points
 
 
 def visualize_holes(N, R, ax=None):
