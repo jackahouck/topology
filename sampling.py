@@ -1,6 +1,6 @@
 import numpy as np
 
-def sample_holes(N, R, max_attempts=10000):
+def place_holes(N, R, max_attempts=10000):
     if R >= 1:
         raise ValueError("R must be less than 1 to fit any hole in the unit disk.")
 
