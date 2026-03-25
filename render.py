@@ -46,8 +46,8 @@ def render_complex(points, complex, title="Simplicial Complex"):
 
 
 if __name__ == "__main__":
-    hole_centers = place_holes(N=5, R=0.1)
-    points = sample_points(M=30, hole_centers=hole_centers, R=0.1)
+    holes = place_holes(N=5, R=0.1)
+    points = sample_points(M=50, holes=holes)
     r = 0.2
 
     # Uncomment for Cech or VR

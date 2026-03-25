@@ -27,8 +27,8 @@ def cech_complex(points, r):
 
 
 if __name__ == "__main__":
-    hole_centers = place_holes(N=5, R=0.1)
-    points = sample_points(M=50, hole_centers=hole_centers, R=0.1)
+    holes = place_holes(N=5, R=0.1)
+    points = sample_points(M=50, holes=holes)
     r = 0.3
 
     cech = cech_complex(points, r)

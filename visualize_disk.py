@@ -4,7 +4,7 @@ import matplotlib.patches as patches
 from sampling import place_holes, sample_points
 
 
-def visualize_holes(N, R, ax=None):
+def visualize(N, R, M, ax=None):
     centers = sample_holes(N, R)
 
     if ax is None:
