@@ -1,5 +1,10 @@
 import numpy as np
 
+class Holes:
+    def __init__(self, centers, R):
+        self.centers = centers
+        self.R = R
+
 def place_holes(N, R, max_attempts=10000):
     if R >= 1:
         raise ValueError("R must be less than 1 to fit any hole in the unit disk.")
@@ -30,9 +35,9 @@ def place_holes(N, R, max_attempts=10000):
 
         attempts += 1
 
-    return np.array(centers)
+    return Holes(centers=np.array(centers), R=R)
 
-def sample_points(M, hole_centers, R, max_attempts=10000):
+def sample_points(M, holes, max_attempts=10000):
     points = []
     attempts = 0
 
@@ -50,7 +55,7 @@ def sample_points(M, hole_centers, R, max_attempts=10000):
 
         # Reject if inside any hole
         in_hole = any(
-            np.linalg.norm(candidate - c) < R for c in hole_centers
+            np.linalg.norm(candidate - c) < holes.R for c in holes.centers
         )
 
         if not in_hole:
@@ -62,8 +67,8 @@ def sample_points(M, hole_centers, R, max_attempts=10000):
 
 
 if __name__ == "__main__":
-    hole_centers = place_holes(N=5, R=0.1)
-    points = sample_points(M=50, hole_centers=hole_centers, R=0.1)
+    holes = place_holes(N=5, R=0.1)
+    points = sample_points(M=50, holes=holes)
     print(f"Placed {len(hole_centers)} holes")
     print(f"Sampled {len(points)} points")
     print(points)
