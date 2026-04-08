@@ -57,15 +57,18 @@ def render_complex(points, complex, holes, title="Simplicial Complex"):
     plotter.view_xy()
     plotter.show()
 
+    return complex
+
 
 if __name__ == "__main__":
     holes = place_holes(N=7, R=0.1)
-    points = sample_points(M=30, holes=holes)
-    r = 0.1
+    points = sample_points(30, holes=holes)
+    r = 0.2
 
     print(len(points))
     # Uncomment for Cech or VR
-    complex = vietoris_rips(points, r)
-    #complex = cech_complex(points, r)
+    #complex = vietoris_rips(points, r)
+    complex = cech_complex(points, r)
 
-    render_complex(points, complex, holes, title="Cech Complex")
+    result = render_complex(points, complex, holes, title="Cech Complex")
+    print(result)
