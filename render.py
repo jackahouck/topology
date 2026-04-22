@@ -61,14 +61,19 @@ def render_complex(points, complex, holes, title="Simplicial Complex"):
 
 
 if __name__ == "__main__":
-    holes = place_holes(N=7, R=0.1)
-    points = sample_points(30, holes=holes)
-    r = 0.2
+    from homologies import compute_betti
 
-    print(len(points))
+    holes = place_holes(N=7, R=0.1)
+    points = sample_points(100, holes=holes)
+    r = 0.15
+
     # Uncomment for Cech or VR
-    #complex = vietoris_rips(points, r)
+    # complex = vietoris_rips(points, r)
     complex = cech_complex(points, r)
 
-    result = render_complex(points, complex, holes, title="Cech Complex")
-    print(result)
+    betti = compute_betti(points, complex)
+    print(f"β0 (components): {betti[0]}")
+    print(f"β1 (holes): {betti[1]}")
+    print(f"β2 (2-holes): {betti[2] if len(betti) > 2 else 0}")
+
+    render_complex(points, complex, holes, title="Cech Complex")

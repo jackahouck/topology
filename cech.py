@@ -7,24 +7,30 @@ from sampling import place_holes, sample_points
 def cech_complex(points, r):
     N = len(points)
 
-    def is_simplex(indices):
-        pts = np.array([points[i] for i in indices], dtype=float)
-        _, r_squared = miniball.get_bounding_ball(pts)
-        return np.sqrt(r_squared) <= r
-
     complex = {0: [], 1: [], 2: [], 3: []}
 
-    # Vertices 
+    # Vertices
     complex[0] = list(combinations(range(N), 1))
 
-    # Edges, triangles, tetrahedra
-    for dim in range(1, 4):
+    for simplex in combinations(range(N), 2):
+        pts = np.array([points[i] for i in simplex], dtype=float)
+        _, r_squared = miniball.get_bounding_ball(pts)
+        if np.sqrt(r_squared) <= r:
+            complex[1].append(simplex)
+
+    edge_set = set(complex[1])
+
+    for dim in range(2, 4):
         for simplex in combinations(range(N), dim + 1):
-            if is_simplex(simplex):
+            # early exit: all pairs must be edges
+            if any((i, j) not in edge_set for i, j in combinations(simplex, 2)):
+                continue
+            pts = np.array([points[i] for i in simplex], dtype=float)
+            _, r_squared = miniball.get_bounding_ball(pts)
+            if np.sqrt(r_squared) <= r:
                 complex[dim].append(simplex)
 
     return complex
-
 
 if __name__ == "__main__":
     holes = place_holes(N=5, R=0.1)

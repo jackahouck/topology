@@ -39,36 +39,29 @@ def place_holes(N, R, max_attempts=10000):
 
 def sample_points(M, holes, max_attempts=10000):
     points = []
-    attempts = 0
+    batch_size = M * 10  
 
     while len(points) < M:
-        if attempts >= max_attempts:
-            raise ValueError(
-                f"Could only sample {len(points)}/{M} points after {max_attempts} attempts. "
-                "Try fewer points or smaller holes."
-            )
+        angles = np.random.uniform(0, 2 * np.pi, batch_size)
+        radii = np.sqrt(np.random.uniform(0, 1, batch_size))
+        candidates = np.column_stack([radii * np.cos(angles), radii * np.sin(angles)])
 
-        # Sample uniformly from the unit disk
-        angle = np.random.uniform(0, 2 * np.pi)
-        r = np.sqrt(np.random.uniform(0, 1))
-        candidate = np.array([r * np.cos(angle), r * np.sin(angle)])
+        for candidate in candidates:
+            dists = np.linalg.norm(holes.centers - candidate, axis=1)
+            if np.all(dists >= holes.R):
+                points.append(candidate)
+            if len(points) == M:
+                break
 
-        # Reject if inside any hole
-        in_hole = any(
-            np.linalg.norm(candidate - c) < holes.R for c in holes.centers
-        )
+        if len(points) < M:
+            batch_size *= 2  
 
-        if not in_hole:
-            points.append(candidate)
-
-        attempts += 1
-
-    return np.array(points)
+    return np.array(points[:M])
 
 
 if __name__ == "__main__":
     holes = place_holes(N=5, R=0.1)
-    points = sample_points(M=50, holes=holes)
-    print(f"Placed {len(hole_centers)} holes")
+    points = sample_points(M=100, holes=holes)
+    print(f"Placed {len(holes.centers)} holes")
     print(f"Sampled {len(points)} points")
     print(points)

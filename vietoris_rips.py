@@ -9,18 +9,22 @@ def vietoris_rips(points, r):
     dist = squareform(pdist(points))
     threshold = 2 * r
 
-    def is_simplex(indices):
-        return all(dist[i][j] <= threshold for i, j in combinations(indices, 2))
-
     complex = {0: [], 1: [], 2: [], 3: []}
 
-    # Vertices 
     complex[0] = list(combinations(range(N), 1))
 
-    # Edges, triangles, tetrahedra
-    for dim in range(1, 4):
+    for simplex in combinations(range(N), 2):
+        i, j = simplex
+        if dist[i][j] <= threshold:
+            complex[1].append(simplex)
+
+    edge_set = set(complex[1])
+
+    for dim in range(2, 4):
         for simplex in combinations(range(N), dim + 1):
-            if is_simplex(simplex):
+            if any((i, j) not in edge_set for i, j in combinations(simplex, 2)):
+                continue
+            if all(dist[i][j] <= threshold for i, j in combinations(simplex, 2)):
                 complex[dim].append(simplex)
 
     return complex
